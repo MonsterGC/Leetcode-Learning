@@ -18,7 +18,7 @@ What should we return when needle is an empty string? This is a great question t
 For the purpose of this problem, we will return 0 when needle is an empty string. This is consistent to C's strstr() and Java's indexOf().
 **/
 
-// 爆破
+// Version BF
 class Solution {
 public:
     int strStr(string haystack, string needle) {
@@ -41,7 +41,7 @@ public:
     }
 };
 
-// KMP版本
+// Version KMP
 class Solution {
 public:
     int showNext(string s, int target) {
@@ -93,4 +93,50 @@ public:
 		}
 		return -1;
 	}
+};
+
+// Version Sunday 
+class Solution {
+public:
+    // Calculated offset 
+    int calShiftMat(string s , char chr){
+    	int i = -1;
+       	for(int temp = 0; temp < s.size() ; temp++){
+       		if(s[temp] == chr) i = temp;
+       	}
+        return i;
+    }
+    int strStr(string haystack, string needle) {
+        if (haystack == needle) return 0;
+		int target = needle.size();
+		if (target == 0) return 0;
+		int len = haystack.size();
+		if (target > len) return -1;
+
+        int i = 0;
+        int j = 0;
+        int temp = 0;
+        while(i < len && j < target){
+            if(haystack[i] == needle[j]){
+                if (j == target - 1) return i - j;
+                i++;
+                j++;
+                continue;
+            }
+            if (i == len - 1) return -1;
+            if(j == 0){
+                i++;
+                continue;
+            }
+            if(i + target - j > len) return -1;
+            temp = calShiftMat(needle,haystack[i + target - j]);
+            if(temp == -1){
+                i++;
+                continue;
+            }
+            i +=target - j - temp;
+            j = 0;
+        }
+        return -1;
+    }
 };
